@@ -4,6 +4,9 @@ A vise powered by an inverted planetary roller screw
 It is a vise and a play thing with a removable mechanism. 3D print it, use it, understand it
 and use a roller screw in your next project.
 
+
+![vise](./images/vise.png)
+
 ### Free
 
 Open free hardware, please use as you see fit.
@@ -33,7 +36,7 @@ If you need a mechanism for linear movement, a roller screw may be good for you.
 The FreeCAD model provided uses a parametric design, so you can adjust the model to your needs.
 Remove the vise parts and add on anything else you like.
 
-If you prefer to start over in a different CAD software, use the `roller_screw_recipe.md`
+If you prefer to start over in a different CAD software, use the [`roller_screw_recipe.md`](roller_screw_recipe.md)
 to see what steps to follow when designing an inverted planetary roller screw.
 
 ### Science
@@ -41,7 +44,7 @@ to see what steps to follow when designing an inverted planetary roller screw.
 I discovered the equations for roller screws weren't working, and made up some new ones that you
 can use.
 
-The planetary roller screw and inverted planetary roller screw have a subtle difference that mean
+The planetary roller screw (PRS) and inverted planetary roller screw (IPRS) have a subtle difference that mean
 the dimensions of their components are different.
 
 
