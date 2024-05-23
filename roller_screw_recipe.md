@@ -4,12 +4,12 @@ Steps to follow to make an inverted planetary roller screw (IPRS).
 
 For a working CAD model that uses this recipe, see the `model` directory.
 
-
   - [Recipe](#recipe)
     - [Main performance parameters](#main-performance-parameters)
     - [Thread tooth](#thread-tooth)
     - [Pitch](#pitch)
     - [Starts](#starts)
+    - [Linear speed](#linear-speed)
     - [Mechanical advantage](#mechanical-advantage)
     - [Nut radius](#nut-radius)
     - [Roller diameter](#roller-diameter)
@@ -22,10 +22,14 @@ For a working CAD model that uses this recipe, see the `model` directory.
     - [Roller surface radius](#roller-surface-radius)
     - [Nut inner surface radius](#nut-inner-surface-radius)
     - [Spur gear diameters](#spur-gear-diameters)
+    - [Spur gear CAD](#spur-gear-cad)
     - [Spur gear teeth](#spur-gear-teeth)
-    - [Planet count](#planet-count)
+    - [Roller thread](#roller-thread)
+    - [Roller count](#roller-count)
     - [Carrier](#carrier)
     - [Circlip](#circlip)
+    - [3D printing tips](#3d-printing-tips)
+    - [Assembly tips](#assembly-tips)
 
 
 
@@ -53,8 +57,13 @@ priority to get the mechanism produced and reliably operating rather than tweaki
 
 ### Thread tooth
 
-A triangle with 45 degrees at the apex is standard, but other profiles (60 degrees) may work.
-The tooth is wrapped around a cylinder to make the thread.
+The teeth on all the threads (rollers, screw, nut) are the same.
+
+The tooth is wrapped around a cylinder to make the thread. The base of the tooth is equal to the thread pitch. The height of the tooth depends angle in the apex of the tooth.
+
+A triangle with 90 degrees at the apex is standard, but other profiles (60 degrees) may work.
+
+Some sources recommend optimising the teeth of the roller thread by making them slightly convex to reduce friction. For a basic construction a simple straight edge may be used, which allows reuse of the tooth profile for the screw, roller and nut.
 
 ### Pitch
 
@@ -68,15 +77,27 @@ in the roller screw.
 
 ### Starts
 
-With the pitch selected the actual lead of the screw can now be decided.
-
+With the pitch selected the actual lead of the screw can now be decided. This is how much linear distance will be traveled per full rotation of the mechanism (either the nut or the screw).
+```
 lead = pitch * thread_starts
+```
 
 |      Lead          | 1 Start | 2 Starts | 3 Starts | 4 Starts |
 |----------------|----------|-----------|---------|---------|
 | 4mm Pitch    | 4mm     | 8mm      | 12mm    | 16mm    |
 | 8mm Pitch    | 8mm     | 16mm     | 24mm    | 32mm    |
 | 12mm Pitch   | 12mm    | 24mm     | 36mm    | 48mm    |
+
+### Linear speed
+
+If the roller screw is being driven by a motor, then the maximum rotation of the motor will determine the maximum linear speed of the final mechanism.
+For a motor with a certain rotations per minute (RPM):
+
+```
+linear_speed_per_second = motor_rpm * lead / 60
+```
+This may help inform the selection of the pitch and thread starts.
+However, speed is inversely related to mechanical advantage.
 
 ### Mechanical advantage
 
@@ -96,6 +117,17 @@ force_out = torque_in * 2 * pi / lead_meters
 
 So the bottom right configuration may have 12x faster linear travel, but 12x less force during that distance.
 
+As an example, a cheap NEMA17 stepper motor such as those found on basic 3D printers may have 0.3Nm of torque. That motor could power the roller screw to lift a platform upward. The maximum amount of weight it could lift would be as follows. Note that twice the lift means half the speed.
+
+| Lifting capacity of 0.3 Nm motor | 1 Start | 2 Starts | 3 Starts | 4 Starts |
+|---------------------------|---------|----------|----------|----------|
+| 4mm Pitch                 | 47 kg   | 24 kg    | 16 kg    | 12 kg    |
+| 8mm Pitch                 | 24 kg   | 12 kg    | 7.8 kg   | 5.9 kg   |
+| 12mm Pitch                | 16 kg   | 7.8 kg   | 5.2 kg   | 3.9 kg   |
+
+This ignores friction, which for roller screws would result in ~10-20% loss.
+
+
 ### Nut radius
 
 How wide can you make the cylinder of the roller screw? Where will it be used? Pick the largest you can tolerate,
@@ -114,7 +146,7 @@ radius_roller = radius_nut / (num_starts + 2)
 
 As the nut contains the screw and the rollers, their radii follow (nut must fit 2 rollers and one screw across the diameter).
 
-The planets always have one thread start. As the number of thread starts increases, the planets complete more turns per revolution of the nut or screw.
+The rollers always have one thread start. As the number of thread starts increases, the rollers complete more turns per revolution of the nut or screw.
 As they rotate faster, they must be smaller in order to complete full turns.
 
 
@@ -222,6 +254,13 @@ The screw spur gear will mesh with a spur gear that is cut onto the end of the r
 roller_spur_pitch_radius = roller_ideal_radius
 ```
 
+### Spur gear CAD
+
+To create the gear in CAD, use a involute gear design with the module and tooth count. For the screw, pad the
+gear shape. For the roller, pad the gear, then create a cylinder and then XOR to create a
+cookie-cutter with a spur gear shaped hole. Place one on each end of the roller and use the cut tool
+to cut the thread.
+
 ### Spur gear teeth
 
 Two spur gears will mesh if they have the same module.
@@ -262,10 +301,17 @@ Then find the roller tooth count
 roller_spur_tooth_count = roller_pitch_diameter / actual_module
 ```
 
-### Planet count
+### Roller thread
 
-The number of planets is flexible and one gains strength and stability
-by adding more. More planets can fit with more screw thread starts a smaller
+The rollers only one thread start, even when the screw and nut have more.
+This means that the lead of a roller itself will be the same as the pitch.
+
+Additionally, the roller thread is the opposite direction of the screw and nut threads. That is, a roller screw with a right hand thread will have right hand nut and screw, but left hand rollers. Turning such a screw in a clockwise direction would advance the screw and roller assembly forward into the nut.
+
+### Roller count
+
+The number of rolllers is flexible and one gains strength and stability
+by adding more. More rollers can fit with more screw thread starts a smaller
 pitch.
 
 ### Carrier
@@ -280,3 +326,23 @@ does not transmit load like in traditional planetary gearsets.
 ### Circlip
 
 A clip placed on the screw to keep the carrier in place. A groove is placed on the screw to keep the circlip from moving axially.
+
+
+### 3D printing tips
+
+Some tips:
+- Print rollers separately and with a raft as they may fall over during printing
+- Print all threads vertically (standing up) so their surfaces are smooth when rotating
+
+
+### Assembly tips
+
+- Place rollers in hand, then the screw on top, then wrap two rubber bands around to keep them
+all together.
+- Move the rollers around under the rubber bands until they are evenly spaced.
+- For each roller rotate in place until it is symmetrical relative to the spur gears. Rotation
+to the next spur gear tooth will cause the roller to migrate along its axis.
+- Add both carriers and circlips, hold the planets and turn the screw.
+If there is clicking, find which roller is
+responsible and whether it is a print artefact or alignment problem. If needed,
+remove one carrier and rotate the rod one spur tooth and try again.
