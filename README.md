@@ -11,6 +11,8 @@ and use a roller screw in your next project.
 
 Open free hardware, please use as you see fit.
 
+![open_hardware](./images/open_hardware.svg)
+
 ### Practical
 
 The vise actually works and is quite nice to use. It has the benefit of being easy
